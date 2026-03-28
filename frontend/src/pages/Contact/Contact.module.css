@@ -1,0 +1,118 @@
+.contacttitle {
+    text-align: center;
+    padding-bottom: 40px;
+    font-size: 35px;
+    color: #1f2937;
+}
+
+
+.contactlayout {
+    display: flex;
+     gap: 40px;
+    max-width: 1100px;
+    margin: 0 auto;
+    align-items: stretch;
+}
+
+
+/*Left-Side (PersonalInfo(BrandName, Name,PhoneNumber etc.) */
+.contactinfo {
+    flex: 1;
+    position: relative;
+    background: linear-gradient(rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.85)),url("./src/assets/chasingIt.jpg");
+    background-size: cover;
+    background-position: center;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+}
+
+
+
+.myinfo {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 70px 50px;
+    padding-left: 70px;
+    text-align: center;
+    color: white;
+}
+
+/*TOP 
+*/
+.infotop {
+    margin-top: 5px;
+    text-align: center;
+}
+
+.infotop h1 {
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin: 0;
+}
+
+
+/*MIDDLE
+(PERSONAL INFO(NAME, PHONE, EMAIL)
+*/
+.infomiddle {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    align-items: center;
+}
+
+/*MIDDLE
+*/
+.infomiddle h2  {
+    font-size: 30px;
+    font-weight: 500;
+    margin-bottom: 10px;
+    opacity: 0.9;
+}
+
+.info-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 18px;
+    line-height: 1.4;
+    opacity: 0.9;
+}
+
+
+/*BOTTOM
+(TEXT)
+*/
+.infobottom {
+    margin-top: 10px;
+    max-width: 340px;
+    font-size: 14px;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+
+.infoshorttext {
+    color:white;
+}
+
+.icon {
+    font-size: 20px;
+    color: #06b6d4;
+    margin-top: 2px;
+    flex-shrink: 0;
+}
+
+
+.my-info a {
+    color: #06b6d4;
+    text-decoration: none;
+}
+
+.my-info a:hover {
+    color: #0891b2;
+}

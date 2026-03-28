@@ -5,7 +5,7 @@ export default function Contact({contactTitle,mottoText ,dataTitle,dataEmail,dat
          <div className={styles.pagecontainer}>
       <h1 className={styles.contacttitle}>{contactTitle}</h1>
       <div className={styles.contactlayout}>
-        <div className={styles.contentinfo}>
+        <div className={styles.contactinfo}>
           <div className={styles.myinfo}>
 
             <div className={styles.infotop}>
