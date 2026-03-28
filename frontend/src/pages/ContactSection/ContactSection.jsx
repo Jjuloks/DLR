@@ -15,8 +15,12 @@ export default function ServicesSection (){
         <section id="contact">
             <div>
                 {data && (
+                    //left side
                     <ContactCard
-                        contactTitle={data.contactTitle} mottoText={data.mottoText} dataTitle={data.dataTitle} dataEmail={data.dataEmail}  dataText={data.dataText} dataNumber1={data.dataNumber1}
+                      contactTitle={data.contactTitle} mottoText={data.mottoText} dataTitle={data.dataTitle} dataEmail={data.dataEmail}  dataText={data.dataText} dataNumber1={data.dataNumber1} 
+//right side
+formTitle ={data.formTitle} formName={data.formName} formSurname={data.formSurname} formPhone={data.formPhone} ctaSendMessage={data.ctaSendMessage} formEmail={data.formEmail}  formMessage={data.formMessage}
+
                     />
                 )}
             </div>

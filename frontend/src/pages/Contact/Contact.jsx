@@ -1,6 +1,9 @@
 import { FiPhone, FiMail } from "react-icons/fi";
 import styles  from "./Contact.module.css"
-export default function Contact({contactTitle,mottoText ,dataTitle,dataEmail,dataText,dataNumber1}) {
+
+export default function Contact({contactTitle,mottoText ,dataTitle,dataEmail,dataText,dataNumber1,
+    formTitle,  formName , formSurname, formPhone , formEmail, formMessage, ctaSendMessage
+}) {
     return (
          <div className={styles.pagecontainer}>
       <h1 className={styles.contacttitle}>{contactTitle}</h1>
@@ -23,6 +26,7 @@ export default function Contact({contactTitle,mottoText ,dataTitle,dataEmail,dat
             <FiMail className={styles.icon} />
               <a href="mailto:julowicz@gmail.com"> {dataEmail}</a>
             </div>
+              </div>
 
    <div className={styles.contactbottom}> 
             <p className={styles.infoshorttext}>
@@ -31,8 +35,43 @@ export default function Contact({contactTitle,mottoText ,dataTitle,dataEmail,dat
           </div>
             </div>
             </div>
+
+            
+         <div className={styles.contactformcard}>
+          <h2>{formTitle}</h2>
+
+          <form className={styles.contactform}>
+            <div className={styles.formgroup}>
+              <label>{formName}</label>
+              <input type="text" className={styles.input} />
             </div>
+           
+            <div className={styles.formgroup}>
+              <label>{formSurname}</label>
+              <input type="text" className={styles.input}/>
             </div>
+
+             <div className={styles.formgroup}>
+              <label>{formPhone}</label>
+              <input type="tel" className={styles.input}/>
             </div>
-    )
+
+            <div className={styles.formgroup}>
+              <label>{formEmail}</label>
+              <input type="email" className={styles.input}  />
+            </div>
+
+            <div className={styles.formgroup}>
+              <label>{formMessage}</label>
+              <textarea rows="5" className={styles.formgroup} id="messageArea"   />
+            </div>
+
+            <button type="submit" className={styles.btnsendMessage}>
+             {ctaSendMessage}
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  );
 }

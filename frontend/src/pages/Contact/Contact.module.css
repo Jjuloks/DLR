@@ -74,7 +74,7 @@
     opacity: 0.9;
 }
 
-.info-item {
+.infoitem {
     display: flex;
     align-items: flex-start;
     gap: 10px;
@@ -108,11 +108,16 @@
 }
 
 
-.my-info a {
+.myinfo a {
     color: #06b6d4;
     text-decoration: none;
 }
 
-.my-info a:hover {
+.myinfo a:hover {
     color: #0891b2;
 }
+
+
+
+
+
