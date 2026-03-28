@@ -63,7 +63,7 @@ export default function Contact({contactTitle,mottoText ,dataTitle,dataEmail,dat
 
             <div className={styles.formgroup}>
               <label>{formMessage}</label>
-              <textarea rows="5" className={styles.formgroup} id="messageArea"   />
+              <textarea rows="5" className={styles.formgroupArea} id="messageArea"/>
             </div>
 
             <button type="submit" className={styles.btnsendMessage}>
