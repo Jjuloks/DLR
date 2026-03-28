@@ -1,32 +1,19 @@
 
 import { NavLink } from 'react-router-dom'
- 
+import styles from './Navbar.module.css'
+
 export default function Navbar() {
   return (
-    <nav>
-      <span>TechAgency</span>
- 
-      <ul>
-        <li>
-          <NavLink to="/">Home</NavLink>
-        </li>
- 
-        <li>
-          <NavLink to="/services">Usługi</NavLink>
-        </li>
- 
-        <li>
-          <NavLink to="/team">Zespół</NavLink>
-        </li>
- 
-        <li>
-          <NavLink to="/news">Aktualności</NavLink>
-        </li>
- 
-        <li>
-          <NavLink to="/contact">Kontakt</NavLink>
-        </li>
-      </ul>
-    </nav>
+    <nav className={styles.wholenavbar}> 
+        <div className={styles.navbar}>
+            <div className={styles.navbarlinks}>
+                <NavLink to='/'>Add Task</NavLink>
+                <NavLink to='/today'>Today</NavLink>
+                <NavLink to='/calendar'>Calendar</NavLink>
+                <NavLink to='/stats'>Stats</NavLink>
+                <NavLink to='/contact'>Contact</NavLink>
+            </div>
+        </div>
+        </nav>
   )
 }

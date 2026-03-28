@@ -1,10 +1,11 @@
+import React from 'react';
 
-
-export default function Home() {
-
-  return (
-    <>
- <div>Homepage</div>
-    </>
-  )
+const AddTaskPage = () => {
+    return (
+       <div className="page-containter">
+             Add Task
+        </div>
+    );
 }
+
+export default AddTaskPage;

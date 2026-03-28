@@ -1,0 +1,48 @@
+.wholenavbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 70px;
+
+  background: #0f172a;
+  border-bottom: 1px solid #1f2937;
+
+  display: flex;
+  align-items: center;
+  z-index: 1000;
+}
+
+.navbar {
+  width: 100%;
+  height: 70px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.navbarlinks {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 60px;
+}
+
+.navbarlinks a {
+  color: #cbd5e1;
+  text-decoration: none;
+  font-weight: 500;
+  padding: 6px 2px;
+  transition: 0.25s ease;
+}
+
+.navbarlinks a:hover {
+  color: #06b6d4;
+}
+
+.navbarlinks a.active {
+  color: #06b6d4;
+  border-bottom: 2px solid #06b6d4;
+  padding-bottom: 4px;
+}   
