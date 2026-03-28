@@ -12,11 +12,11 @@ export default function ServicesSection (){
     if (error) return <ErrorMessage message={error} />;
 
     return (
-        <section id="services">
+        <section id="contact">
             <div>
                 {data && (
                     <ContactCard
-                        contactTitle={data.contactTitle}
+                        contactTitle={data.contactTitle} mottoText={data.mottoText} dataTitle={data.dataTitle} dataEmail={data.dataEmail}  dataText={data.dataText} dataNumber1={data.dataNumber1}
                     />
                 )}
             </div>
