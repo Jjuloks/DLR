@@ -2,6 +2,7 @@ import { useStrapi } from "../../hooks/useStrapi";
 import ContactCard from "../Contact/Contact";
 import Loader from  "../../components/Loader/Loader"
 import ErrorMessage from "../../components/ErrorMessage/ErrorMessage";
+import styles from "./ContactSection.module.css"
 
 
 
@@ -12,8 +13,8 @@ export default function ServicesSection (){
     if (error) return <ErrorMessage message={error} />;
 
     return (
-        <section id="contact">
-            <div>
+        <section id="contact" styles={styles.section}>
+            <div className={styles.container}>
                 {data && (
                     //left side
                     <ContactCard
