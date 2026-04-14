@@ -16,10 +16,13 @@ export default function AddTask() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
+     if (!title.trim()) {
+    setError('Name is required');
+    return;
+  }
+  setLoading(true);
     setError(null);
     setSuccess(false);
-     console.log(priority)
     try {
       const payload = {
         data: {
@@ -38,7 +41,6 @@ export default function AddTask() {
       });
 
       const responseData = await response.json();
-
       if (!response.ok) {
         throw new Error(responseData.error?.message || `Błąd ${response.status}`);
       }
@@ -82,7 +84,7 @@ export default function AddTask() {
               className={styles.input}
               value={descirption}
               onChange={(e) => setDescirption(e.target.value)}
-              placeholder="Opis zadania..."
+              placeholder="Describe your task..."
             />
           </div>
 
