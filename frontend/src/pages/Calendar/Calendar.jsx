@@ -5,16 +5,9 @@ import { useState } from 'react'
 
 const localizer = momentLocalizer(moment)
 
-export default function MyCalendar() {
+export default function MyCalendar({events = []}) {
      const [date, setDate] = useState(new Date())
     const [view, setView] = useState('month')
-  const events = [
-    {
-      title: 'My Task',
-      start: new Date(2026, 3, 17, 10, 0), // year, month(0-indexed), day, hour, min
-      end: new Date(2026, 3, 17, 11, 0),
-    }
-  ]
 
   return (
     <div style={{ height: '600px' }}>

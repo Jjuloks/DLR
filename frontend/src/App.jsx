@@ -3,7 +3,7 @@ import Navbar from './components/Navbar/Navbar'
 import Home from './components/Home/Home'
 import Footer from './components/Footer/Footer'
 import ContactSection from './pages/ContactSection/ContactSection'
-import CalendarSection from './pages/Calendar/Calendar'
+import CalendarSection from './pages/CalendarSection/CalendarSection'
 import './App.css'
 
 export default function App() {
