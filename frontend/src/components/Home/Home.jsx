@@ -5,7 +5,7 @@ export default function AddTask() {
   const [title, setTitle] = useState('');
   const [descirption, setDescirption] = useState('');
   const [date, setDate] = useState('');
-  const [time, setTime] = useState('');
+  const [dateEnd, setDateEnd] = useState('');
   const [priority, setPriority] = useState('high');
 
   const [loading, setLoading] = useState(false);
@@ -29,7 +29,7 @@ export default function AddTask() {
           title: title,
           descirption: descirption,
           date: date || null,
-          time: time ? `${time}:00.000` : null,
+          dateEnd: dateEnd || null,
           priority: priority,
         }
       };
@@ -49,7 +49,7 @@ export default function AddTask() {
       setTitle('');
       setDescirption('');
       setDate('');
-      setTime('');
+      setDateEnd('');
       setPriority('high');
 
     } catch (err) {
@@ -92,7 +92,7 @@ export default function AddTask() {
             <div className={styles.formgroup}>
               <label>Date</label>
               <input
-                type="date"
+                type="datetime-local"
                 className={styles.input}
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
@@ -100,12 +100,12 @@ export default function AddTask() {
             </div>
 
             <div className={styles.formgroup}>
-              <label>Time</label>
+              <label>End Date</label>
               <input
-                type="time"
+                type="datetime-local"
                 className={styles.input}
-                value={time}
-                onChange={(e) => setTime(e.target.value)}
+                value={dateEnd}
+                onChange={(e) => setDateEnd(e.target.value)}
               />
             </div>
           </div>
