@@ -13,10 +13,11 @@ export default function CalendarSection() {
 
   const events = rawData.map((task) => {
     const dateStr = task.date;
-    const timeStr = task.time ? task.time.slice(0, 5) : '00:00';
+    const dateEndStr = task.dateEnd;
 
-    const start = new Date(`${dateStr}T${timeStr}`);
-    const end   = new Date(start.getTime() + 60 * 60 * 1000);
+
+    const start = new Date(`${dateStr}`);
+    const end  = new Date(`${dateEndStr}`);
 
     return {
       id: task.id,
