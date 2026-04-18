@@ -2,6 +2,16 @@ import React, { useState } from 'react';
 import styles from './Home.module.css';
 
 const STRAPI_URL = import.meta.env.VITE_STRAPI_URL || 'http://localhost:1337';
+/* CATEGORIES EMOJIS*/
+const categories = [
+  { value: 'work',     label: 'Work',     emoji: '💼' },
+  { value: 'personal', label: 'Personal', emoji: '🏠' },
+  { value: 'health',   label: 'Health',   emoji: '🏃' },
+  { value: 'learning', label: 'Learning', emoji: '📚' },
+  { value: 'creative', label: 'Creative', emoji: '🎨' },
+];
+
+/*PRIORITIES  */
 const priorities = [
   {
     value: 'high',
@@ -49,6 +59,9 @@ export default function AddTask() {
   const [loading, setLoading]         = useState(false);
   const [error, setError]             = useState(null);
   const [success, setSuccess]         = useState(false);
+  const [category, setCategory] = useState('work');
+
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -65,6 +78,7 @@ export default function AddTask() {
           date: date || null,
           dateEnd: dateEnd || null,
           priority,
+          category,
         },
       };
 
@@ -216,6 +230,28 @@ export default function AddTask() {
       >
         {p.icon}
         {p.label}
+      </button>
+    ))}
+  </div>
+</div>
+
+<div className={styles.formgroup}>
+  <label>
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+      <path d="M1.5 3.5C1.5 2.4 2.4 1.5 3.5 1.5H5L6.5 3H10.5C11.05 3 11.5 3.45 11.5 4V9.5C11.5 10.05 11.05 10.5 10.5 10.5H3.5C2.4 10.5 1.5 9.6 1.5 8.5V3.5Z" stroke="#9ca3af" strokeWidth="1.3" strokeLinejoin="round"/>
+    </svg>
+    Category
+  </label>
+  <div className={styles.categoryGroup}>
+    {categories.map(c => (
+      <button
+        key={c.value}
+        type="button"
+        onClick={() => setCategory(c.value)}
+        className={`${styles.categoryBtn} ${category === c.value ? styles.categoryBtnActive : ''}`}
+      >
+        <span>{c.emoji}</span>
+        {c.label}
       </button>
     ))}
   </div>
