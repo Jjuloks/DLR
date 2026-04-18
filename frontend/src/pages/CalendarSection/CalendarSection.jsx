@@ -31,5 +31,5 @@ export default function CalendarSection() {
 
 
 
-  return <CalendarView events={events}/>;
+  return <CalendarView events={events} />;
 }
