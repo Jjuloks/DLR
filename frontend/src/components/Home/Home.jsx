@@ -60,6 +60,8 @@ export default function AddTask() {
   const [error, setError]             = useState(null);
   const [success, setSuccess]         = useState(false);
   const [category, setCategory] = useState('work');
+  const selectedPriority = priorities.find(p => p.value === priority);
+  const selectedCategory = categories.find(c => c.value === category);
 
 
 
@@ -292,6 +294,26 @@ export default function AddTask() {
                 <path d="M7 4.5V7.5M7 9.5V9.6" stroke="#ef4444" strokeWidth="1.6" strokeLinecap="round"/>
               </svg>
               {error}
+              {title && !loading && !success && (
+  <div className={styles.taskPreview}>
+    <span className={styles.taskPreviewTitle}>{title}</span>
+    <div className={styles.taskPreviewBadges}>
+      <span
+        className={styles.badge}
+        style={{
+          background: selectedPriority.bg,
+          color: selectedPriority.color,
+          border: `1px solid ${selectedPriority.border}`,
+        }}
+      >
+        {selectedPriority.label}
+      </span>
+      <span className={`${styles.badge} ${styles.badgeCategory}`}>
+        {selectedCategory.emoji} {selectedCategory.label}
+      </span>
+    </div>
+  </div>
+)}
             </div>
           )}
 
