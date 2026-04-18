@@ -227,3 +227,84 @@ input[type='datetime-local'].input {
 .priorityBtn:hover {
   opacity: 0.85;
 }
+
+
+/* ─── Category pills ─────────────────────────────── */
+.categoryGroup {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.categoryBtn {
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: 1.5px solid #e9ebf0;
+  background: transparent;
+  color: #6b7280;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.15s ease;
+  font-family: inherit;
+}
+
+.categoryBtnActive {
+  border-color: #6366f1;
+  background: #f5f5ff;
+  color: #6366f1;
+}
+
+.categoryBtn:hover {
+  opacity: 0.85;
+}
+
+.taskPreview {
+  margin-top: 14px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: #f9fafb;
+  border: 1px solid #f1f5f9;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  animation: fadeIn 0.2s ease;
+}
+
+.taskPreviewTitle {
+  font-size: 12px;
+  font-weight: 500;
+  color: #374151;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 160px;
+}
+
+.taskPreviewBadges {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.badge {
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.badgeCategory {
+  background: #f5f5ff;
+  color: #6366f1;
+  border: 1px solid #e0e0f8;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
