@@ -2,7 +2,44 @@ import React, { useState } from 'react';
 import styles from './Home.module.css';
 
 const STRAPI_URL = import.meta.env.VITE_STRAPI_URL || 'http://localhost:1337';
-
+const priorities = [
+  {
+    value: 'high',
+    label: 'High',
+    color: '#ef4444',
+    bg: 'rgba(239,68,68,0.10)',
+    border: 'rgba(239,68,68,0.25)',
+    icon: (
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+        <path d="M7 2L7 8M7 10.5V11" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
+      </svg>
+    ),
+  },
+  {
+    value: 'medium',
+    label: 'Medium',
+    color: '#f59e0b',
+    bg: 'rgba(245,158,11,0.10)',
+    border: 'rgba(245,158,11,0.25)',
+    icon: (
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+        <path d="M3 5H11M3 9H11" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
+      </svg>
+    ),
+  },
+  {
+    value: 'low',
+    label: 'Low',
+    color: '#10b981',
+    bg: 'rgba(16,185,129,0.10)',
+    border: 'rgba(16,185,129,0.25)',
+    icon: (
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+        <path d="M7 2L7 8M4.5 5.5L7 8L9.5 5.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+      </svg>
+    ),
+  },
+];
 export default function AddTask() {
   const [title, setTitle]             = useState('');
   const [description, setDescription] = useState('');
@@ -157,23 +194,32 @@ export default function AddTask() {
           </div>
 
           {/* Priority */}
-          <div className={styles.formgroup}>
-            <label>
-              <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                <path d="M2 10V7M2 7V4L5.5 2L9 4L12 2V8L9 10L5.5 8L2 10Z" stroke="#9ca3af" strokeWidth="1.3" strokeLinejoin="round"/>
-              </svg>
-              Priority
-            </label>
-            <select
-              className={styles.input}
-              value={priority}
-              onChange={e => setPriority(e.target.value)}
-            >
-              <option value="low">Low</option>
-              <option value="medium">Medium</option>
-              <option value="high">High</option>
-            </select>
-          </div>
+        <div className={styles.formgroup}>
+  <label>
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+      <path d="M2 10V7M2 7V4L5.5 2L9 4L12 2V8L9 10L5.5 8L2 10Z" stroke="#9ca3af" strokeWidth="1.3" strokeLinejoin="round"/>
+    </svg>
+    Priority
+  </label>
+  <div className={styles.priorityGroup}>
+    {priorities.map(p => (
+      <button
+        key={p.value}
+        type="button"
+        className={styles.priorityBtn}
+        onClick={() => setPriority(p.value)}
+        style={
+          priority === p.value
+            ? { borderColor: p.border, background: p.bg, color: p.color }
+            : {}
+        }
+      >
+        {p.icon}
+        {p.label}
+      </button>
+    ))}
+  </div>
+</div>
 
           {/* Submit */}
           <button type="submit" className={btnClass} disabled={loading || success}>
