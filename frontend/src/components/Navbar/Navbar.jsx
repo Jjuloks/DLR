@@ -11,6 +11,7 @@ export default function Navbar() {
                 <NavLink to='/today'>Today</NavLink>
                 <NavLink to='/calendar'>Calendar</NavLink>
                 <NavLink to='/stats'>Stats</NavLink>
+                <NavLink to='/progress'>Progress</NavLink>
                 <NavLink to='/contact'>Contact</NavLink>
             </div>
         </div>
