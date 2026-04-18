@@ -11,7 +11,7 @@ export default function MyCalendar({events = []}) {
     const [selectedEvent, setSelectedEvent] = useState(null)
 
   return (
-    <div style={{ height: '600px' }}>
+    <div style={{ height: '850px', marginTop : '40px' }}>
       <Calendar
         localizer={localizer}
         events={events}
