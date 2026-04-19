@@ -1,5 +1,54 @@
 import styles  from  "./Progress.module.css"
 
+function StatsBar() {
+  return (
+    <div className={styles.gd_stats_bar}>
+      <div className={styles.gd_stat_card}>
+        <div className={styles.gd_stat_label}>AVG PROGRESS</div>
+        <div className={styles.gd_stat_value} style={{ color: "#6366f1" }}>0%</div>
+      </div>
+
+      <div className={styles.gd_stat_card}>
+        <div className={styles.gd_stat_label}>ON TRACK</div>
+        <div className={styles.gd_stat_value} style={{ color: "#10b981" }}>0/0</div>
+      </div>
+
+      <div className={styles.gd_stat_card}>
+        <div className={styles.gd_stat_label}>SYSTEM ACTIONS</div>
+        <div className={styles.gd_stat_value} style={{ color: "#f59e0b" }}>0</div>
+      </div>
+
+      <div className={styles.gd_stat_card}>
+        <div className={styles.gd_stat_label}>TODAY</div>
+        <div className={styles.gd_stat_value} style={{ color: "#ec4899" }}>0/0</div>
+      </div>
+    </div>
+  );
+}
+function TodayPanel() {
+  return (
+    <div className={styles.gd_today}>
+      <div className={styles.gd_today_header}>
+        <div>
+          <div className={styles.gd_today_title}>Today's Actions</div>
+          <div className={styles.gd_today_date}>
+            {new Date().toLocaleDateString("en", {
+              weekday: "long",
+              month: "long",
+              day: "numeric",
+            })}
+          </div>
+        </div>
+        <div className={styles.gd_today_count}>
+          <span>0/0</span>
+          <small>completed</small>
+        </div>
+      </div>
+
+      <div className={styles.gd_today_empty}>Nothing scheduled for today</div>
+    </div>
+  );
+}
 
 export default function Progress() {
     return (
@@ -22,6 +71,8 @@ export default function Progress() {
         <button className={styles.gd_tab}>Calendar</button>
       </div>
   <div className={styles.gd_body}>
+     <StatsBar />
+     <TodayPanel />
         <div className={styles.gd_filter_row}>
           <button className={styles.gd_filter_btn_active}>All Goals</button>
           <button className={styles.gd_filter_btn}>Short-Term</button>
