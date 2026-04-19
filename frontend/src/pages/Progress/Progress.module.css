@@ -95,7 +95,7 @@
 
 /* ─── Stats Bar ────────────────────────────────────────────────────────────── */
 
-.gd_stats-bar {
+.gd_stats_bar {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 10px;
@@ -121,3 +121,61 @@
   font-size: 20px;
   font-weight: 800;
 }
+
+
+/* ─── Today Panel ──────────────────────────────────────────────────────────── */
+
+.gd_today {
+  background: var(--gd-surface);
+  border: 1px solid var(--gd-border);
+  border-radius: 14px;
+  padding: 16px 18px;
+  margin-bottom: 18px;
+}
+
+.gd_today_header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.gd_today_title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--gd-text);
+}
+
+.gd_today_date {
+  font-size: 11px;
+  color: var(--gd-muted);
+  margin-top: 2px;
+}
+
+.gd_today_count {
+  text-align: right;
+}
+
+.gd_today_count span {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--gd-text);
+}
+
+.gd_today_count span.complete {
+  color: var(--gd-green);
+}
+
+.gd_today_count small {
+  display: block;
+  font-size: 10px;
+  color: var(--gd-muted);
+}
+
+.gd_today_empty {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.25);
+  text-align: center;
+  padding: 18px 0;
+}
+
