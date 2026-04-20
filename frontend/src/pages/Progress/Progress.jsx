@@ -79,36 +79,40 @@ const handleSubmit = async (e) =>{
 }
 
 return(
-  <div>
-  <div className="gd-modal-body">
+  <div className={styles.gd_overlay}>
+    <div className={styles.gd_modal}>
+        <div className={styles.gd_modal_header}>
+          <div className={styles.gd_modal_eyebrow}>PROGRESS & GOALS</div>
+          <div className={styles.gd_modal_title}> Define Your Goal : Build Your System</div>
+  <div className={styles.gd_modal_body}>
     
 
-     <div className="gd-form">
-              <div className="gd-field">
-                <label className="gd-label">GOAL TITLE</label>
-                <input className="gd-input" placeholder="What do you want to achieve?" value={title} onChange={e => setTitle(e.target.value)} />
+     <div className={styles.gd_form}>
+              <div className={styles.gd_field}>
+                <label className={styles.gd_label}>GOAL TITLE</label>
+                <input className={styles.gd_input} placeholder="What do you want to achieve?" value={title} onChange={e => setTitle(e.target.value)} />
               </div>
-                 <div className="gd-field">
-                <label className="gd-label">DESCRIPTION</label>
-                <textarea className="gd-input gd-textarea" placeholder="What does success look like?" value={description} onChange={e => setDescription(e.target.value)} />
+                    <div className={styles.gd_field}>
+                 <label className={styles.gd_label}>DESCRIPTION</label>
+                <textarea className={styles.gd_input_textarea} placeholder="What does success look like?" value={description} onChange={e => setDescription(e.target.value)} />
               </div>
-              <div className="gd-row-2">
-                <div className="gd-field">
-                  <label className="gd-label">START DATE</label>
-                  <input type="date" className="gd-input" value={startDate} onChange={e => setStartDate(e.target.value)} />
+              <div className={styles.gd_row_2}>
+                <div className={styles.gd_field}>
+                  <label className={styles.gd_label}>START DATE</label>
+                  <input type="date" className={styles.gd_input} value={startDate} onChange={e => setStartDate(e.target.value)} />
                 </div>
-                <div className="gd-field">
-                  <label className="gd-label">DEADLINE</label>
-                  <input type="date" className="gd-input" value={endDate} onChange={e => setEndDate(e.target.value)} />
+                <div className={styles.gd_field}>
+                  <label className={styles.gd_label}>DEADLINE</label>
+                  <input type="date" className={styles.gd_input} value={endDate} onChange={e => setEndDate(e.target.value)} />
                 </div>
-                 <div className="gd-field">
-                <label className="gd-label">GOAL TYPE</label>
-                <div className="gd-toggle-row">
+                 <div className={styles.gd_field}>
+                <label className={styles.gd_label}>GOAL TYPE</label>
+                <div className={styles.gd_toggle_row}>
                   {goalTypes.map(({ value, label, activeClass }) => (
                     <button
                       key={value}
                       onClick={() => setGoalType(value)}
-                      className={`gd-toggle-btn ${goaltype === value ? activeClass : ""}`}
+                      className={`gd_toggle_btn ${goaltype === value ? activeClass : ""}`}
                     >
                       {label}
                     </button>
@@ -133,6 +137,8 @@ return(
               </div>
               </div>
   </div>
+    </div>
+    </div>
     </div>
 )
 
