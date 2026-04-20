@@ -304,3 +304,118 @@
 
 
 
+/* ─── Step Buttons ─────────────────────────────────────────────────────────── */
+
+.gd_modal_steps {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.gd_step_btn {
+  padding: 5px 14px;
+  border-radius: var(--gd-radius-sm);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  background: var(--gd-subtle);
+  color: var(--gd-muted);
+  transition: background 0.15s, color 0.15s;
+}
+
+.gd_step_btn.active {
+  background: var(--gd-accent);
+  color: white;
+}
+
+/* ─── Toggle Buttons ───────────────────────────────────────────────────────── */
+
+.gd_toggle_btn {
+  flex: 1;
+  padding: 10px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  background: var(--gd-surface);
+  border: 1px solid var(--gd-border);
+  color: var(--gd-muted);
+  transition: all 0.15s;
+}
+
+.gd_toggle_btn.active_short {
+  background: rgba(245, 158, 11, 0.18);
+  border-color: rgba(245, 158, 11, 0.45);
+  color: #fbbf24;
+}
+
+.gd_toggle_btn.active_long {
+  background: rgba(99, 102, 241, 0.18);
+  border-color: rgba(99, 102, 241, 0.45);
+  color: var(--gd-accent-light);
+}
+
+/* ─── Category Chips ───────────────────────────────────────────────────────── */
+
+.gd_chip_row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.gd_chip {
+  padding: 5px 11px;
+  border-radius: var(--gd-radius-sm);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  background: var(--gd-surface);
+  border: 1px solid var(--gd-border);
+  color: var(--gd-muted);
+  transition: all 0.15s;
+}
+
+/* ─── Modal Actions ────────────────────────────────────────────────────────── */
+
+.gd_modal_actions {
+  display: flex;
+  gap: 10px;
+}
+
+.gd_btn_ghost {
+  flex: 1;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--gd-radius-md);
+  color: var(--gd-muted);
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.gd_btn_primary:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ─── Error / Success ──────────────────────────────────────────────────────── */
+
+.gd_error {
+  font-size: 13px;
+  color: #f87171;
+  background: rgba(248, 113, 113, 0.08);
+  border: 1px solid rgba(248, 113, 113, 0.2);
+  border-radius: 8px;
+  padding: 9px 12px;
+}
+
+.gd_success {
+  font-size: 13px;
+  color: #34d399;
+  background: rgba(52, 211, 153, 0.08);
+  border: 1px solid rgba(52, 211, 153, 0.2);
+  border-radius: 8px;
+  padding: 9px 12px;
+}
