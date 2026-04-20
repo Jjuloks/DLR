@@ -3,13 +3,30 @@ import styles  from  "./Progress.module.css"
 
 const STRAPI_URL = import.meta.env.VITE_STRAPI_URL || 'http://localhost:1337';
 
+/*CONSTANTS */
+const CATEGORIES = ["Health & Fitness", "Learning", "Career", "Finance", "Personal", "Creative", "Relationships"];
+const CATEGORY_COLORS = {
+  "Health & Fitness": "#10b981",
+  "Learning": "#6366f1",
+  "Career": "#f59e0b",
+  "Finance": "#14b8a6",
+  "Personal": "#ec4899",
+  "Creative": "#f97316",
+  "Relationships": "#8b5cf6",
+};
+const goalTypes = [
+  { value: "short-term", label: "Short-Term", activeClass: "active-short" },
+  { value: "long-term", label: "Long-Term", activeClass: "active-long" },
+];
+
+
 function AddGoalForm({onClose}){
 const [title,setTitle] = useState("");
 const [description,setDescription] = useState("");
 const [startDate,setStartDate] = useState("01/01/2026");
 const [endDate, setEndDate] = useState("07/07/2026");
-const [goaltype,setGoalType] = useState("");
-const [category,setCategory] = useState("");
+const [goaltype,setGoalType] = useState("short-term");
+const [category,setCategory] = useState(CATEGORIES[0]);
 const [loading, setLoading]         = useState(false);
 const [error, setError]             = useState(null);
 const [success, setSuccess]         = useState(false);
@@ -48,7 +65,7 @@ const handleSubmit = async (e) =>{
         setDescription('');
         setStartDate('');
         setEndDate('');
-        setGoalType('high');
+        setGoalType('short-term');
         setCategory('');
       }, 2000);
 
@@ -85,13 +102,31 @@ return(
                   <input type="date" className="gd-input" value={endDate} onChange={e => setEndDate(e.target.value)} />
                 </div>
                  <div className="gd-field">
-                  <label className="gd-label">goaltype</label>
-                  <input type="text" className="gd-input" value={goaltype} onChange={e => setGoalType(e.target.value)} />
+                <label className="gd-label">GOAL TYPE</label>
+                <div className="gd-toggle-row">
+                  {goalTypes.map(({ value, label, activeClass }) => (
+                    <button
+                      key={value}
+                      onClick={() => setGoalType(value)}
+                      className={`gd-toggle-btn ${goaltype === value ? activeClass : ""}`}
+                    >
+                      {label}
+                    </button>
+                  ))}
                 </div>
-                 <div className="gd-field">
-                  <label className="gd-label">category</label>
-                  <input type="text" className="gd-input" value={category} onChange={e => setCategory(e.target.value)} />
+              </div>
+                    <div className="gd-field">
+                <label className="gd-label">CATEGORY</label>
+                <div className="gd-chip-row">
+                  {CATEGORIES.map(c => (
+                    <button key={c} onClick={() => setCategory(c)}
+                      className={`gd-chip${category === c ? " active" : ""}`}
+                      style={category === c ? { borderColor: CATEGORY_COLORS[c], color: CATEGORY_COLORS[c], background: `${CATEGORY_COLORS[c]}18` } : {}}>
+                      {c}
+                    </button>
+                  ))}
                 </div>
+              </div>
                  <button className="gd-btn-primary" onClick={handleSubmit}>Create Goal</button>
                   <button onClick={onClose}>Cancel</button>
 
