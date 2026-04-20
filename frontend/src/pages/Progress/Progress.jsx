@@ -1,4 +1,109 @@
+import { useState } from "react";
 import styles  from  "./Progress.module.css"
+
+const STRAPI_URL = import.meta.env.VITE_STRAPI_URL || 'http://localhost:1337';
+
+function AddGoalForm({onClose}){
+const [title,setTitle] = useState("");
+const [description,setDescription] = useState("");
+const [startDate,setStartDate] = useState("01/01/2026");
+const [endDate, setEndDate] = useState("07/07/2026");
+const [goaltype,setGoalType] = useState("");
+const [category,setCategory] = useState("");
+const [loading, setLoading]         = useState(false);
+const [error, setError]             = useState(null);
+const [success, setSuccess]         = useState(false);
+
+const handleSubmit = async (e) =>{
+   e.preventDefault();
+    setLoading(true);
+    setError(null);
+    setSuccess(false);
+
+     try {
+      const payload = {
+        data: {
+          title : title,
+          description : description,
+          startDate: startDate || null,
+          endDate: endDate || null,
+          goalType : goaltype,
+          category : category,
+        },
+      };
+
+      const response = await fetch(`${STRAPI_URL}/api/goals`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+
+      const responseData = await response.json();
+      if (!response.ok) throw new Error(responseData.error?.message || `Error ${response.status}`);
+
+      setSuccess(true);
+      setTimeout(() => {
+        setSuccess(false);
+        setTitle('');
+        setDescription('');
+        setStartDate('');
+        setEndDate('');
+        setGoalType('high');
+        setCategory('');
+      }, 2000);
+
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+ 
+
+}
+
+return(
+  <div>
+  <div className="gd-modal-body">
+    
+
+     <div className="gd-form">
+              <div className="gd-field">
+                <label className="gd-label">GOAL TITLE</label>
+                <input className="gd-input" placeholder="What do you want to achieve?" value={title} onChange={e => setTitle(e.target.value)} />
+              </div>
+                 <div className="gd-field">
+                <label className="gd-label">DESCRIPTION</label>
+                <textarea className="gd-input gd-textarea" placeholder="What does success look like?" value={description} onChange={e => setDescription(e.target.value)} />
+              </div>
+              <div className="gd-row-2">
+                <div className="gd-field">
+                  <label className="gd-label">START DATE</label>
+                  <input type="date" className="gd-input" value={startDate} onChange={e => setStartDate(e.target.value)} />
+                </div>
+                <div className="gd-field">
+                  <label className="gd-label">DEADLINE</label>
+                  <input type="date" className="gd-input" value={endDate} onChange={e => setEndDate(e.target.value)} />
+                </div>
+                 <div className="gd-field">
+                  <label className="gd-label">goaltype</label>
+                  <input type="text" className="gd-input" value={goaltype} onChange={e => setGoalType(e.target.value)} />
+                </div>
+                 <div className="gd-field">
+                  <label className="gd-label">category</label>
+                  <input type="text" className="gd-input" value={category} onChange={e => setCategory(e.target.value)} />
+                </div>
+                 <button className="gd-btn-primary" onClick={handleSubmit}>Create Goal</button>
+                  <button onClick={onClose}>Cancel</button>
+
+              </div>
+              </div>
+  </div>
+    </div>
+)
+
+
+}
+
 
 function StatsBar() {
   return (
@@ -51,6 +156,7 @@ function TodayPanel() {
 }
 
 export default function Progress() {
+    const [showForm, setShowForm] = useState(false);
     return (
          <div className={styles.pagecontainer}>
          <div className={styles.gd_root}>
@@ -64,8 +170,9 @@ export default function Progress() {
             </h1>
             <p className={styles.gd_subtitle}>Build the system. Let the results follow.</p>
             </div>
-             <button className={styles.gd_btn_new}>+ New Goal</button>
+             <button className={styles.gd_btn_new} onClick={() => setShowForm(true)}>+ New Goal</button>
           </div>
+             {showForm && <AddGoalForm onClose={() => setShowForm(false)} />}
 <div className={styles.gd_tabs}>
         <button className={styles.gd_tab_active}>Goals</button>
         <button className={styles.gd_tab}>Calendar</button>
