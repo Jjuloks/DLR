@@ -10,8 +10,8 @@ export default function Navbar() {
                 <NavLink to='/'>Add Task</NavLink>
                 <NavLink to='/today'>Today</NavLink>
                 <NavLink to='/calendar'>Calendar</NavLink>
-                <NavLink to='/stats'>Stats</NavLink>
-                <NavLink to='/progress'>Progress</NavLink>
+                <NavLink to='/stats'>Analytics</NavLink>
+                <NavLink to='/progress'>Goals</NavLink>
                 <NavLink to='/contact'>Contact</NavLink>
             </div>
         </div>

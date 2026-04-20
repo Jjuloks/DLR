@@ -27,6 +27,7 @@ const [startDate,setStartDate] = useState("01/01/2026");
 const [endDate, setEndDate] = useState("07/07/2026");
 const [goaltype,setGoalType] = useState("short-term");
 const [category,setCategory] = useState(CATEGORIES[0]);
+const [step,setStep] = useState("goal");
 const [loading, setLoading]         = useState(false);
 const [error, setError]             = useState(null);
 const [success, setSuccess]         = useState(false);
@@ -78,71 +79,136 @@ const handleSubmit = async (e) =>{
 
 }
 
-return(
-  <div className={styles.gd_overlay}>
-    <div className={styles.gd_modal}>
+ return (
+    <div className={styles.gd_overlay}>
+      <div className={styles.gd_modal}>
+
         <div className={styles.gd_modal_header}>
           <div className={styles.gd_modal_eyebrow}>PROGRESS & GOALS</div>
-          <div className={styles.gd_modal_title}> Define Your Goal : Build Your System</div>
-  <div className={styles.gd_modal_body}>
-    
+          <div className={styles.gd_modal_title}>
+            {step === "goal" ? "Define Your Goal" : "Build Your System"}
+          </div>
+        </div>
 
-     <div className={styles.gd_form}>
+        <div className={styles.gd_modal_body}>
+
+          <div className={styles.gd_modal_steps}>
+            <button
+              onClick={() => setStep("goal")}
+              className={`${styles.gd_step_btn} ${step === "goal" ? styles.active : ""}`}>
+              1. Goal Details
+            </button>
+            <button
+              onClick={() => setStep("system")}
+              className={`${styles.gd_step_btn} ${step === "system" ? styles.active : ""}`}>
+              2. Action System
+            </button>
+          </div>
+
+          {step === "goal" ? (
+            <div className={styles.gd_form}>
+
               <div className={styles.gd_field}>
                 <label className={styles.gd_label}>GOAL TITLE</label>
-                <input className={styles.gd_input} placeholder="What do you want to achieve?" value={title} onChange={e => setTitle(e.target.value)} />
+                <input
+                  className={styles.gd_input}
+                  placeholder="What do you want to achieve?"
+                  value={title}
+                  onChange={e => setTitle(e.target.value)} />
               </div>
-                    <div className={styles.gd_field}>
-                 <label className={styles.gd_label}>DESCRIPTION</label>
-                <textarea className={styles.gd_input_textarea} placeholder="What does success look like?" value={description} onChange={e => setDescription(e.target.value)} />
+
+              <div className={styles.gd_field}>
+                <label className={styles.gd_label}>DESCRIPTION</label>
+                <textarea
+                  className={styles.gd_input_textarea}
+                  placeholder="What does success look like?"
+                  value={description}
+                  onChange={e => setDescription(e.target.value)} />
               </div>
+
               <div className={styles.gd_row_2}>
                 <div className={styles.gd_field}>
                   <label className={styles.gd_label}>START DATE</label>
-                  <input type="date" className={styles.gd_input} value={startDate} onChange={e => setStartDate(e.target.value)} />
+                  <input
+                    type="date"
+                    className={styles.gd_input}
+                    value={startDate}
+                    onChange={e => setStartDate(e.target.value)} />
                 </div>
                 <div className={styles.gd_field}>
                   <label className={styles.gd_label}>DEADLINE</label>
-                  <input type="date" className={styles.gd_input} value={endDate} onChange={e => setEndDate(e.target.value)} />
-                </div>
-                 <div className={styles.gd_field}>
-                <label className={styles.gd_label}>GOAL TYPE</label>
-                <div className={styles.gd_toggle_row}>
-                  {goalTypes.map(({ value, label, activeClass }) => (
-                    <button
-                      key={value}
-                      onClick={() => setGoalType(value)}
-                      className={`gd_toggle_btn ${goaltype === value ? activeClass : ""}`}
-                    >
-                      {label}
-                    </button>
-                  ))}
+                  <input
+                    type="date"
+                    className={styles.gd_input}
+                    value={endDate}
+                    onChange={e => setEndDate(e.target.value)} />
                 </div>
               </div>
-                    <div className="gd-field">
-                <label className="gd-label">CATEGORY</label>
-                <div className="gd-chip-row">
+
+              <div className={styles.gd_field}>
+                <label className={styles.gd_label}>GOAL TYPE</label>
+                <div className={styles.gd_toggle_row}>
+                  <button
+                    onClick={() => setGoalType("short-term")}
+                    className={`${styles.gd_toggle_btn} ${goaltype === "short-term" ? styles.active_short : ""}`}>
+                    Short-Term
+                  </button>
+                  <button
+                    onClick={() => setGoalType("long-term")}
+                    className={`${styles.gd_toggle_btn} ${goaltype === "long-term" ? styles.active_long : ""}`}>
+                    Long-Term
+                  </button>
+                </div>
+              </div>
+
+              <div className={styles.gd_field}>
+                <label className={styles.gd_label}>CATEGORY</label>
+                <div className={styles.gd_chip_row}>
                   {CATEGORIES.map(c => (
-                    <button key={c} onClick={() => setCategory(c)}
-                      className={`gd-chip${category === c ? " active" : ""}`}
+                    <button
+                      key={c}
+                      onClick={() => setCategory(c)}
+                      className={`${styles.gd_chip} ${category === c ? styles.active : ""}`}
                       style={category === c ? { borderColor: CATEGORY_COLORS[c], color: CATEGORY_COLORS[c], background: `${CATEGORY_COLORS[c]}18` } : {}}>
                       {c}
                     </button>
                   ))}
                 </div>
               </div>
-                 <button className="gd-btn-primary" onClick={handleSubmit}>Create Goal</button>
-                  <button onClick={onClose}>Cancel</button>
 
+              {error && <div className={styles.gd_error}>{error}</div>}
+              {success && <div className={styles.gd_success}>Goal created!</div>}
+
+              <div className={styles.gd_modal_actions}>
+                <button className={styles.gd_btn_ghost} onClick={onClose}>Cancel</button>
+                <button
+                  className={styles.gd_btn_primary}
+                  onClick={() => setStep("system")}>
+                  Next: Build Your System →
+                </button>
               </div>
+
+            </div>
+          ) : (
+            <div className={styles.gd_form}>
+
+              <div className={styles.gd_modal_actions}>
+                <button className={styles.gd_btn_ghost} onClick={() => setStep("goal")}>← Back</button>
+                <button
+                  className={styles.gd_btn_primary}
+                  onClick={handleSubmit}
+                  disabled={loading || !title.trim() || !endDate}>
+                  {loading ? "Creating..." : "Create Goal"}
+                </button>
               </div>
-  </div>
-    </div>
-    </div>
-    </div>
-)
 
+            </div>
+          )}
 
+        </div>
+      </div>
+    </div>
+  );
 }
 
 
