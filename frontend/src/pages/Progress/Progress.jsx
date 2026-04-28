@@ -67,6 +67,54 @@ function getDaysRemaining(endDate) {
 }
 
 
+function getMilestone(p) {
+  if (p >= 100) return { label: "Goal Complete!", color: "#10b981" };
+  if (p >= 75)  return { label: "75% Reached",    color: "#6366f1" };
+  if (p >= 50)  return { label: "Halfway There",  color: "#f59e0b" };
+  if (p >= 25)  return { label: "25% Milestone",  color: "#14b8a6" };
+  return null;
+}
+
+function isScheduledOn(action, dateStr, startDate) {
+  const date  = new Date(dateStr + "T00:00:00");
+  const start = new Date(startDate + "T00:00:00");
+  if (date < start) return false;
+  if (action.frequency === "daily")   return true;
+  if (action.frequency === "weekly")  return (action.schedule.daysOfWeek ?? []).includes(date.getDay());
+  if (action.frequency === "monthly") return date.getDate() === (action.schedule.dayOfMonth ?? 1);
+  if (action.frequency === "interval") {
+    const diffDays = Math.round((date - start) / (1000 * 60 * 60 * 24));
+    return diffDays % (action.schedule.intervalDays ?? 2) === 0;
+  }
+  return false;
+}
+
+function getStreak(action) {
+  const today = new Date();
+  let streak = 0;
+  for (let i = 0; i < 365; i++) {
+    const d = new Date(today);
+    d.setDate(d.getDate() - i);
+    const ds = d.toISOString().split("T")[0];
+    if ((action.completedDates ?? []).includes(ds)) streak++;
+    else if (i > 0) break;
+  }
+  return streak;
+}
+
+function getTodayActions(goals) {
+  const today = new Date().toISOString().split("T")[0];
+  const out = [];
+  for (const goal of goals) {
+    for (const action of (goal.actions ?? [])) {
+      if (isScheduledOn(action, today, goal.startDate)) {
+        out.push({ goal, action, isDone: (action.completedDates ?? []).includes(today) });
+      }
+    }
+  }
+  return out;
+}
+
 
 function AddGoalForm({onClose}){
 const [title,setTitle] = useState("");
