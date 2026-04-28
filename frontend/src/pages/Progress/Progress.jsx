@@ -42,7 +42,7 @@ function scheduleLabel(action) {
   return time;
 }
 
-unction calculateProjectedSessions(action, startDate, endDate) {
+function calculateProjectedSessions(action, startDate, endDate) {
   const start = new Date(startDate);
   const end   = new Date(endDate);
   const diffDays = Math.max(1, Math.ceil((end - start) / (1000 * 60 * 60 * 24)));
@@ -113,6 +113,45 @@ function getTodayActions(goals) {
     }
   }
   return out;
+}
+
+
+
+function ProgressRing({ progress, size = 60, color }) {
+  const radius = (size - 8) / 2;
+  const circumference = 2 * Math.PI * radius;
+  const offset = circumference - (progress / 100) * circumference;
+  return (
+    <svg width={size} height={size} className={styles.gd_ring}>
+      <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth={6} />
+      <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke={color} strokeWidth={6}
+        strokeDasharray={circumference} strokeDashoffset={offset} strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function MilestoneBar({ progress }) {
+  return (
+    <div className={styles.gd_milestone_track}>
+      {[25, 50, 75, 100].map(m => (
+        <div key={m}
+          className={`${styles.gd_milestone_dot} ${progress >= m ? styles.active : ""}`}
+          style={{ left: `${m}%` }} />
+      ))}
+      <div className={styles.gd_milestone_fill} style={{ width: `${Math.min(100, progress)}%` }} />
+    </div>
+  );
+}
+
+function FreqBadge({ action }) {
+  const map = {
+    daily:    { cls: styles.gd_badge_daily,    label: "DAILY" },
+    weekly:   { cls: styles.gd_badge_weekly,   label: "WEEKLY" },
+    monthly:  { cls: styles.gd_badge_monthly,  label: "MONTHLY" },
+    interval: { cls: styles.gd_badge_interval, label: `EVERY ${action.schedule.intervalDays ?? 2}D` },
+  };
+  const s = map[action.frequency] ?? map.daily;
+  return <span className={`${styles.gd_badge} ${s.cls}`}>{s.label}</span>;
 }
 
 
