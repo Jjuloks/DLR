@@ -42,6 +42,31 @@ function scheduleLabel(action) {
   return time;
 }
 
+unction calculateProjectedSessions(action, startDate, endDate) {
+  const start = new Date(startDate);
+  const end   = new Date(endDate);
+  const diffDays = Math.max(1, Math.ceil((end - start) / (1000 * 60 * 60 * 24)));
+  if (action.frequency === "daily")    return diffDays;
+  if (action.frequency === "interval") return Math.ceil(diffDays / (action.schedule.intervalDays ?? 2));
+  if (action.frequency === "weekly")   return Math.ceil(diffDays / 7) * (action.schedule.daysOfWeek?.length ?? action.timesPerPeriod);
+  if (action.frequency === "monthly")  return Math.ceil(diffDays / 30);
+  return diffDays;
+}
+
+function calculateGoalProgress(goal) {
+  if (!goal.actions || goal.actions.length === 0) return 0;
+  const progresses = goal.actions.map(a => {
+    const projected = calculateProjectedSessions(a, goal.startDate, goal.endDate);
+    return projected === 0 ? 0 : Math.min(100, (a.completedSessions / projected) * 100);
+  });
+  return progresses.reduce((s, p) => s + p, 0) / progresses.length;
+}
+
+function getDaysRemaining(endDate) {
+  return Math.ceil((new Date(endDate) - new Date()) / (1000 * 60 * 60 * 24));
+}
+
+
 
 function AddGoalForm({onClose}){
 const [title,setTitle] = useState("");
