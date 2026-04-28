@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState ,useEffect, useMemo} from "react";
 import styles  from  "./Progress.module.css"
 
 const STRAPI_URL = import.meta.env.VITE_STRAPI_URL || 'http://localhost:1337';
@@ -14,10 +14,12 @@ const CATEGORY_COLORS = {
   "Creative": "#f97316",
   "Relationships": "#8b5cf6",
 };
+
 const goalTypes = [
   { value: "short-term", label: "Short-Term", activeClass: "active-short" },
   { value: "long-term", label: "Long-Term", activeClass: "active-long" },
 ];
+
 
 
 function AddGoalForm({onClose}){
@@ -28,9 +30,15 @@ const [endDate, setEndDate] = useState("07/07/2026");
 const [goaltype,setGoalType] = useState("short-term");
 const [category,setCategory] = useState(CATEGORIES[0]);
 const [step,setStep] = useState("goal");
+
+
 const [loading, setLoading]         = useState(false);
 const [error, setError]             = useState(null);
 const [success, setSuccess]         = useState(false);
+
+
+
+
 
 const handleSubmit = async (e) =>{
    e.preventDefault();
@@ -39,7 +47,7 @@ const handleSubmit = async (e) =>{
     setSuccess(false);
 
      try {
-      const payload = {
+      const goalPayload = {
         data: {
           title : title,
           description : description,
@@ -50,14 +58,17 @@ const handleSubmit = async (e) =>{
         },
       };
 
-      const response = await fetch(`${STRAPI_URL}/api/goals`, {
+      const goalResponse = await fetch(`${STRAPI_URL}/api/goals`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
+        body: JSON.stringify(goalPayload),
       });
 
-      const responseData = await response.json();
-      if (!response.ok) throw new Error(responseData.error?.message || `Error ${response.status}`);
+      const goalData = await goalResponse.json();
+      if (!goalResponse.ok) throw new Error(goalResponse.error?.message || `Error ${goalResponse.status}`);
+
+
+
 
       setSuccess(true);
       setTimeout(() => {
@@ -185,7 +196,7 @@ const handleSubmit = async (e) =>{
                   className={styles.gd_btn_primary}
                   onClick={() => setStep("system")}>
                   Next: Build Your System →
-                </button>
+                </button> 
               </div>
 
             </div>
@@ -237,6 +248,9 @@ function StatsBar() {
     </div>
   );
 }
+
+
+
 function TodayPanel() {
   return (
     <div className={styles.gd_today}>
