@@ -20,6 +20,27 @@ const goalTypes = [
   { value: "long-term", label: "Long-Term", activeClass: "active-long" },
 ];
 
+function fmtHour(h) {
+  const ampm = h < 12 ? "AM" : "PM";
+  const h12 = h === 0 ? 12 : h > 12 ? h - 12 : h;
+  return `${h12}:00 ${ampm}`;
+}
+
+function scheduleLabel(action) {
+  const time = fmtHour(action.schedule.hour);
+  if (action.frequency === "daily")    return `Every day at ${time}`;
+  if (action.frequency === "interval") return `Every ${action.schedule.intervalDays ?? 2} days at ${time}`;
+  if (action.frequency === "weekly") {
+    const days = (action.schedule.daysOfWeek ?? []).map(d => DAYS_SHORT[d]).join(", ");
+    return `${days} at ${time}`;
+  }
+  if (action.frequency === "monthly") {
+    const d = action.schedule.dayOfMonth ?? 1;
+    const suffix = d === 1 ? "st" : d === 2 ? "nd" : d === 3 ? "rd" : "th";
+    return `${d}${suffix} of month at ${time}`;
+  }
+  return time;
+}
 
 
 function AddGoalForm({onClose}){
