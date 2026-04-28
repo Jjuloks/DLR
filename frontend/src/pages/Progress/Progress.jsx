@@ -164,13 +164,47 @@ const [goaltype,setGoalType] = useState("short-term");
 const [category,setCategory] = useState(CATEGORIES[0]);
 const [step,setStep] = useState("goal");
 
+  const [actions, setActions] = useState([]);
+  const [aName, setAName]     = useState("");
+  const [aDesc, setADesc]     = useState("");
+  const [aFreq, setAFreq]     = useState("daily");
+  const [aHour, setAHour]     = useState(7);
+  const [aDow, setADow]       = useState([1, 3, 5]);
+  const [aDay, setADay]       = useState(1);
+  const [aInt, setAInt]       = useState(2);
 
 const [loading, setLoading]         = useState(false);
 const [error, setError]             = useState(null);
 const [success, setSuccess]         = useState(false);
 
 
+const toggleDow = d => setADow(p => p.includes(d) ? p.filter(x => x !== d) : [...p, d]);
 
+  const getProjection = () => {
+    if (!startDate || !endDate) return 0;
+    const fake = {
+      frequency: aFreq,
+      timesPerPeriod: aDow.length,
+      schedule: { hour: aHour, daysOfWeek: aDow, dayOfMonth: aDay, intervalDays: aInt },
+      completedSessions: 0,
+    };
+    return calculateProjectedSessions(fake, startDate, endDate);
+  };
+
+  const addAction = () => {
+    if (!aName.trim()) return;
+    setActions(prev => [...prev, {
+      tempId: Date.now().toString(),
+      name: aName,
+      description: aDesc,
+      frequency: aFreq,
+      timesPerPeriod: aFreq === "weekly" ? aDow.length : 1,
+      schedule: { hour: aHour, daysOfWeek: aDow, dayOfMonth: aDay, intervalDays: aInt },
+      completedSessions: 0,
+      completedDates: [],
+    }]);
+    setAName(""); setADesc(""); setAFreq("daily"); setAHour(7); setADow([1, 3, 5]); setAInt(2);
+  };  
 
 
 const handleSubmit = async (e) =>{
