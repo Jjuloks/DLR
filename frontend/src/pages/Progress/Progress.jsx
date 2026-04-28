@@ -624,7 +624,155 @@ function TodayPanel({ goals, onLog }) {
   );
 }
 
+/* ─── GOAL CARD ───────────────────────────────────────────────────────────── */
+function GoalCard({ goal, onLog }) {
+  const [expanded, setExpanded] = useState(false);
+  const progress  = calculateGoalProgress(goal);
+  const daysLeft  = getDaysRemaining(goal.endDate);
+  const milestone = getMilestone(progress);
+  const color     = CATEGORY_COLORS[goal.category] || "#6366f1";
 
+  return (
+    <div className={styles.gd_card}>
+      <div className={styles.gd_card_row}>
+        <div className={styles.gd_ring_wrap}>
+          <ProgressRing progress={progress} size={64} color={color} />
+          <span className={styles.gd_ring_pct}>{Math.round(progress)}%</span>
+        </div>
+
+        <div className={styles.gd_card_body}>
+          <div className={styles.gd_card_tags}>
+            <span className={styles.gd_card_title}>{goal.title}</span>
+            <span className={`${styles.gd_type_badge} ${goal.goalType === "long-term" ? styles.long : styles.short}`}>
+              {goal.goalType === "long-term" ? "LONG-TERM" : "SHORT-TERM"}
+            </span>
+            <span className={styles.gd_category_tag}>{goal.category}</span>
+          </div>
+          <p className={styles.gd_card_desc}>{goal.description}</p>
+          <MilestoneBar progress={progress} />
+          <div className={styles.gd_card_meta}>
+            {milestone && (
+              <span className={styles.gd_milestone_label} style={{ color: milestone.color }}>
+                🏆 {milestone.label}
+              </span>
+            )}
+            <span className={`${styles.gd_days} ${daysLeft < 14 ? styles.urgent : ""}`}>
+              {daysLeft > 0 ? `${daysLeft}d left` : daysLeft === 0 ? "Due today" : `${Math.abs(daysLeft)}d overdue`}
+            </span>
+            <span className={styles.gd_action_count}>{goal.actions.length} actions in system</span>
+          </div>
+        </div>
+
+        <button className={styles.gd_expand_btn} onClick={() => setExpanded(!expanded)}>
+          {expanded ? "Hide" : "System"}
+        </button>
+      </div>
+
+      {expanded && (
+        <div className={styles.gd_system}>
+          <div className={styles.gd_system_header}>YOUR SYSTEM — {goal.actions.length} ACTIONS</div>
+          {goal.actions.map(action => {
+            const projected = calculateProjectedSessions(action, goal.startDate, goal.endDate);
+            const pct = projected > 0 ? Math.min(100, (action.completedSessions / projected) * 100) : 0;
+            const streak = getStreak(action);
+            return (
+              <div key={action.id} className={styles.gd_action}>
+                <div className={styles.gd_action_info}>
+                  <div className={styles.gd_action_row}>
+                    <span className={styles.gd_action_name}>{action.name}</span>
+                    <FreqBadge action={action} />
+                    {streak > 1 && <span className={styles.gd_streak}>🔥 {streak} streak</span>}
+                  </div>
+                  <p className={styles.gd_action_desc}>{action.description}</p>
+                  <div className={styles.gd_action_schedule}>🕐 {scheduleLabel(action)}</div>
+                  <div className={styles.gd_action_progress}>
+                    <div className={styles.gd_action_bar}>
+                      <div className={styles.gd_action_fill} style={{ width: `${pct}%`, background: color }} />
+                    </div>
+                    <span className={styles.gd_action_count}>{action.completedSessions}/{projected}</span>
+                  </div>
+                </div>
+                <button className={styles.gd_log_btn} onClick={() => onLog(goal.id, action.id)}>+ Log</button>
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function WeekCalendar({ goals }) {
+  const [weekOffset, setWeekOffset] = useState(0);
+
+  const weekDays = useMemo(() => {
+    const days = [];
+    const now = new Date();
+    const monday = new Date(now);
+    monday.setDate(now.getDate() - ((now.getDay() + 6) % 7) + weekOffset * 7);
+    for (let i = 0; i < 7; i++) {
+      const d = new Date(monday);
+      d.setDate(monday.getDate() + i);
+      days.push(d);
+    }
+    return days;
+  }, [weekOffset]);
+
+  const todayStr = new Date().toISOString().split("T")[0];
+
+  return (
+    <div className={styles.gd_cal}>
+      <div className={styles.gd_cal_header}>
+        <span className={styles.gd_cal_range}>
+          {weekDays[0].toLocaleDateString("en", { month: "short", day: "numeric" })} –{" "}
+          {weekDays[6].toLocaleDateString("en", { month: "short", day: "numeric", year: "numeric" })}
+        </span>
+        <div className={styles.gd_cal_nav}>
+          <button onClick={() => setWeekOffset(w => w - 1)}>‹</button>
+          <button onClick={() => setWeekOffset(0)}>Today</button>
+          <button onClick={() => setWeekOffset(w => w + 1)}>›</button>
+        </div>
+      </div>
+
+      <div className={styles.gd_cal_grid}>
+        {weekDays.map(day => {
+          const ds = day.toISOString().split("T")[0];
+          const isToday = ds === todayStr;
+          const slots = [];
+          for (const goal of goals) {
+            for (const action of (goal.actions ?? [])) {
+              if (isScheduledOn(action, ds, goal.startDate)) {
+                slots.push({
+                  action,
+                  isDone: (action.completedDates ?? []).includes(ds),
+                  goalColor: CATEGORY_COLORS[goal.category] || "#6366f1",
+                });
+              }
+            }
+          }
+          slots.sort((a, b) => a.action.schedule.hour - b.action.schedule.hour);
+          return (
+            <div key={ds} className={`${styles.gd_cal_day} ${isToday ? styles.today : ""}`}>
+              <div className={styles.gd_cal_day_header}>
+                <div className={styles.gd_cal_dow}>{DAYS_SHORT[day.getDay()]}</div>
+                <div className={`${styles.gd_cal_date} ${isToday ? styles.today : ""}`}>{day.getDate()}</div>
+              </div>
+              {slots.map(({ action, isDone, goalColor }) => (
+                <div key={action.id}
+                  className={`${styles.gd_cal_slot} ${isDone ? styles.done : ""}`}
+                  style={isDone ? { background: `${goalColor}25`, color: goalColor, borderColor: `${goalColor}40` } : {}}
+                  title={`${action.name} @ ${fmtHour(action.schedule.hour)}`}>
+                  <span>{isDone ? "✓" : "○"}</span>
+                  <span>{action.name}</span>
+                </div>
+              ))}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
 
 export default function Progress() {
   const [goals, setGoals]               = useState([]);
