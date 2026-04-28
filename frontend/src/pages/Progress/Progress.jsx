@@ -20,6 +20,9 @@ const goalTypes = [
   { value: "long-term", label: "Long-Term", activeClass: "active-long" },
 ];
 
+const DAYS_SHORT = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+
 function fmtHour(h) {
   const ampm = h < 12 ? "AM" : "PM";
   const h12 = h === 0 ? 12 : h > 12 ? h - 12 : h;
@@ -399,7 +402,107 @@ const handleSubmit = async (e) =>{
             </div>
           ) : (
             <div className={styles.gd_form}>
+ {actions.length > 0 && (
+                <div className={styles.gd_field}>
+                  <label className={styles.gd_label}>YOUR SYSTEM ({actions.length} action{actions.length !== 1 ? "s" : ""})</label>
+                  {actions.map(a => (
+                    <div key={a.tempId} className={styles.gd_system_item}>
+                      <div className={styles.gd_system_item_info}>
+                        <div className={styles.gd_action_row}>
+                          <span className={styles.gd_action_name}>{a.name}</span>
+                          <FreqBadge action={a} />
+                        </div>
+                        <div className={styles.gd_action_schedule}>🕐 {scheduleLabel(a)}</div>
+                        {endDate && (
+                          <div className={styles.gd_projection}>
+                            → {calculateProjectedSessions(a, startDate, endDate)} sessions projected
+                          </div>
+                        )}
+                      </div>
+                      <button className={styles.gd_remove_btn}
+                        onClick={() => setActions(p => p.filter(x => x.tempId !== a.tempId))}>×</button>
+                    </div>
+                  ))}
+                </div>
+              )}
 
+              <div className={styles.gd_add_action_box}>
+                <label className={styles.gd_label}>ADD AN ACTION</label>
+                <input className={styles.gd_input} placeholder="Action name (e.g. Gym workout)"
+                  value={aName} onChange={e => setAName(e.target.value)} />
+                <input className={styles.gd_input} placeholder="What does doing this well look like?"
+                  value={aDesc} onChange={e => setADesc(e.target.value)} />
+
+                <div className={styles.gd_field}>
+                  <label className={styles.gd_label}>FREQUENCY TYPE</label>
+                  <div className={styles.gd_freq_grid}>
+                    {["daily", "weekly", "monthly", "interval"].map(f => (
+                      <button key={f} onClick={() => setAFreq(f)}
+                        className={`${styles.gd_freq_btn} ${aFreq === f ? styles.active : ""}`}>
+                        {f === "interval" ? "Every N days" : f.charAt(0).toUpperCase() + f.slice(1)}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {aFreq === "weekly" && (
+                  <div className={styles.gd_field}>
+                    <label className={styles.gd_label}>DAYS OF WEEK</label>
+                    <div className={styles.gd_dow_row}>
+                      {DAYS_SHORT.map((d, i) => (
+                        <button key={i} onClick={() => toggleDow(i)}
+                          className={`${styles.gd_dow_btn} ${aDow.includes(i) ? styles.active : ""}`}>
+                          {d}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {aFreq === "monthly" && (
+                  <div className={styles.gd_field}>
+                    <label className={styles.gd_label}>DAY OF MONTH — {aDay}</label>
+                    <input type="range" min={1} max={28} value={aDay}
+                      onChange={e => setADay(+e.target.value)} className={styles.gd_range} />
+                  </div>
+                )}
+
+                {aFreq === "interval" && (
+                  <div className={styles.gd_field}>
+                    <label className={styles.gd_label}>REPEAT EVERY</label>
+                    <div className={styles.gd_interval_row}>
+                      {[2, 3, 4, 5, 7, 10, 14].map(n => (
+                        <button key={n} onClick={() => setAInt(n)}
+                          className={`${styles.gd_interval_btn} ${aInt === n ? styles.active : ""}`}>
+                          {n}d
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <div className={styles.gd_field}>
+                  <label className={styles.gd_label}>TIME OF DAY — {fmtHour(aHour)}</label>
+                  <input type="range" min={5} max={23} value={aHour}
+                    onChange={e => setAHour(+e.target.value)} className={styles.gd_range} />
+                  <div className={styles.gd_range_labels}>
+                    <span>5 AM</span><span>12 PM</span><span>11 PM</span>
+                  </div>
+                </div>
+
+                {endDate && (
+                  <div className={styles.gd_projection_box}>
+                    → {getProjection()} sessions projected by your deadline
+                  </div>
+                )}
+
+                <button className={styles.gd_btn_secondary} onClick={addAction} disabled={!aName.trim()}>
+                  + Add to system
+                </button>
+              </div>
+
+              {error   && <div className={styles.gd_error}>{error}</div>}
+              {success && <div className={styles.gd_success}>Goal created!</div>}
               <div className={styles.gd_modal_actions}>
                 <button className={styles.gd_btn_ghost} onClick={() => setStep("goal")}>← Back</button>
                 <button
