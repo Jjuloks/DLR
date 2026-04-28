@@ -118,7 +118,39 @@ function getTodayActions(goals) {
   return out;
 }
 
+function normalizeAction(a) {
+  const attr = a.attributes ?? a;
+  return {
+    id: a.id ?? attr.id,
+    name: attr.name,
+    description: attr.description ?? "",
+    frequency: attr.frequency,
+    timesPerPeriod: attr.timesPerPeriod ?? 1,
+    completedSessions: attr.completedSessions ?? 0,
+    completedDates: attr.completedDates ?? [],
+    schedule: {
+      hour: attr.hour ?? 7,
+      daysOfWeek: attr.daysOfWeek ?? [],
+      dayOfMonth: attr.dayOfMonth ?? 1,
+      intervalDays: attr.intervalDays ?? 2,
+    },
+  };
+}
 
+function normalizeGoal(g) {
+  const attr = g.attributes ?? g;
+  const rawActions = attr.actions?.data ?? attr.actions ?? [];
+  return {
+    id: g.id ?? attr.id,
+    title: attr.title,
+    description: attr.description ?? "",
+    startDate: attr.startDate,
+    endDate: attr.endDate,
+    goalType: attr.goalType,
+    category: attr.category,
+    actions: rawActions.map(normalizeAction),
+  };
+}
 
 function ProgressRing({ progress, size = 60, color }) {
   const radius = (size - 8) / 2;
@@ -158,7 +190,7 @@ function FreqBadge({ action }) {
 }
 
 
-function AddGoalForm({onClose}){
+function AddGoalForm({onClose,onCreated}){
 const [title,setTitle] = useState("");
 const [description,setDescription] = useState("");
 const [startDate,setStartDate] = useState("01/01/2026");
@@ -267,19 +299,9 @@ const handleSubmit = async (e) =>{
         }
       }
 
-
-
-
       setSuccess(true);
-      setTimeout(() => {
-        setSuccess(false);
-        setTitle('');
-        setDescription('');
-        setStartDate('');
-        setEndDate('');
-        setGoalType('short-term');
-        setCategory('');
-      }, 2000);
+      if (onCreated) await onCreated();
+      setTimeout(() => { setSuccess(false); onClose(); }, 1200);
 
     } catch (err) {
       setError(err.message);
@@ -503,6 +525,7 @@ const handleSubmit = async (e) =>{
 
               {error   && <div className={styles.gd_error}>{error}</div>}
               {success && <div className={styles.gd_success}>Goal created!</div>}
+              
               <div className={styles.gd_modal_actions}>
                 <button className={styles.gd_btn_ghost} onClick={() => setStep("goal")}>← Back</button>
                 <button
@@ -550,73 +573,174 @@ function StatsBar() {
 }
 
 
+function TodayPanel({ goals, onLog }) {
+  const items = getTodayActions(goals);
+  const done = items.filter(i => i.isDone).length;
 
-function TodayPanel() {
   return (
     <div className={styles.gd_today}>
       <div className={styles.gd_today_header}>
         <div>
           <div className={styles.gd_today_title}>Today's Actions</div>
           <div className={styles.gd_today_date}>
-            {new Date().toLocaleDateString("en", {
-              weekday: "long",
-              month: "long",
-              day: "numeric",
-            })}
+            {new Date().toLocaleDateString("en", { weekday: "long", month: "long", day: "numeric" })}
           </div>
         </div>
         <div className={styles.gd_today_count}>
-          <span>0/0</span>
+          <span className={done === items.length && items.length > 0 ? styles.complete : ""}>
+            {done}/{items.length}
+          </span>
           <small>completed</small>
         </div>
       </div>
 
-      <div className={styles.gd_today_empty}>Nothing scheduled for today</div>
+      {items.length === 0 ? (
+        <div className={styles.gd_today_empty}>Nothing scheduled for today</div>
+      ) : (
+        <div className={styles.gd_today_list}>
+          {items
+            .sort((a, b) => a.action.schedule.hour - b.action.schedule.hour)
+            .map(({ goal, action, isDone }) => {
+              const streak = getStreak(action);
+              return (
+                <div key={action.id} className={`${styles.gd_today_item} ${isDone ? styles.done : ""}`}>
+                  <div className={styles.gd_today_dot}>
+                    {isDone ? "✓" : fmtHour(action.schedule.hour).split(":")[0]}
+                  </div>
+                  <div className={styles.gd_today_info}>
+                    <div className={`${styles.gd_today_name} ${isDone ? styles.done : ""}`}>{action.name}</div>
+                    <div className={styles.gd_today_meta}>{goal.title} · {fmtHour(action.schedule.hour)}</div>
+                  </div>
+                  {streak > 1 && <span className={styles.gd_streak}>🔥 {streak}</span>}
+                  {!isDone && (
+                    <button className={styles.gd_btn_done} onClick={() => onLog(goal.id, action.id)}>Done</button>
+                  )}
+                </div>
+              );
+            })}
+        </div>
+      )}
     </div>
   );
 }
 
+
+
 export default function Progress() {
-    const [showForm, setShowForm] = useState(false);
-    return (
-         <div className={styles.pagecontainer}>
-         <div className={styles.gd_root}>
-          <div className={styles.gd_header}>
-            <div className={styles.gd_header_left}>
-            <div className={styles.gd_eyebrow}>
-        PROGRESS & GOALS
-            </div>
-            <h1 className={styles.gd_h1}>
-              Your Goals
-            </h1>
+  const [goals, setGoals]               = useState([]);
+  const [showForm, setShowForm]         = useState(false);
+  const [view, setView]                 = useState("goals");
+  const [filter, setFilter]             = useState("all");
+  const [loadingGoals, setLoadingGoals] = useState(false);
+
+  const fetchGoals = async () => {
+    try {
+      setLoadingGoals(true);
+      const res = await fetch(`${STRAPI_URL}/api/goals?populate=actions`);
+      const data = await res.json();
+      const list = (data.data ?? []).map(normalizeGoal);
+      setGoals(list);
+    } catch (err) {
+      console.error("Failed to load goals", err);
+    } finally {
+      setLoadingGoals(false);
+    }
+  };
+
+  useEffect(() => { fetchGoals(); }, []);
+
+  const filteredGoals = useMemo(
+    () => goals.filter(g => filter === "all" || g.goalType === filter),
+    [goals, filter]
+  );
+
+  const handleLog = async (goalId, actionId) => {
+    const today = new Date().toISOString().split("T")[0];
+    const goal = goals.find(g => g.id === goalId);
+    const action = goal?.actions.find(a => a.id === actionId);
+    if (!action) return;
+
+    const newDates = (action.completedDates ?? []).includes(today)
+      ? action.completedDates
+      : [...(action.completedDates ?? []), today];
+    const newSessions = action.completedSessions + 1;
+
+    setGoals(prev => prev.map(g =>
+      g.id !== goalId ? g : {
+        ...g,
+        actions: g.actions.map(a =>
+          a.id !== actionId ? a : { ...a, completedSessions: newSessions, completedDates: newDates }
+        ),
+      }
+    ));
+
+    try {
+      await fetch(`${STRAPI_URL}/api/actions/${actionId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ data: { completedSessions: newSessions, completedDates: newDates } }),
+      });
+    } catch (err) {
+      console.error("Failed to log action", err);
+      fetchGoals();
+    }
+  };
+
+  return (
+    <div className={styles.pagecontainer}>
+      <div className={styles.gd_root}>
+
+        <div className={styles.gd_header}>
+          <div className={styles.gd_header_left}>
+            <div className={styles.gd_eyebrow}>PROGRESS & GOALS</div>
+            <h1 className={styles.gd_h1}>Your Goals</h1>
             <p className={styles.gd_subtitle}>Build the system. Let the results follow.</p>
-            </div>
-             <button className={styles.gd_btn_new} onClick={() => setShowForm(true)}>+ New Goal</button>
           </div>
-             {showForm && <AddGoalForm onClose={() => setShowForm(false)} />}
-<div className={styles.gd_tabs}>
-        <button className={styles.gd_tab_active}>Goals</button>
-        <button className={styles.gd_tab}>Calendar</button>
-      </div>
-  <div className={styles.gd_body}>
-     <StatsBar />
-     <TodayPanel />
-        <div className={styles.gd_filter_row}>
-          <button className={styles.gd_filter_btn_active}>All Goals</button>
-          <button className={styles.gd_filter_btn}>Short-Term</button>
-          <button className={styles.gd_filter_btn}>Long-Term</button>
+          <button className={styles.gd_btn_new} onClick={() => setShowForm(true)}>+ New Goal</button>
         </div>
 
-        <div className={styles.gd_empty}>
-          <div className={styles.gd_empty_icon}>🎯</div>
-          <div className={styles.gd_empty_title}>No goals yet</div>
-          <p>Set your first goal and build a system to reach it.</p>
+        {showForm && <AddGoalForm onClose={() => setShowForm(false)} onCreated={fetchGoals} />}
+
+        <div className={styles.gd_tabs}>
+          <button onClick={() => setView("goals")}
+            className={`${styles.gd_tab} ${view === "goals" ? styles.active : ""}`}>Goals</button>
+          <button onClick={() => setView("calendar")}
+            className={`${styles.gd_tab} ${view === "calendar" ? styles.active : ""}`}>Calendar</button>
+        </div>
+
+        <div className={styles.gd_body}>
+          <StatsBar goals={goals} />
+          <TodayPanel goals={goals} onLog={handleLog} />
+
+          {view === "calendar" ? (
+            <WeekCalendar goals={goals} />
+          ) : (
+            <>
+              <div className={styles.gd_filter_row}>
+                {["all", "short-term", "long-term"].map(f => (
+                  <button key={f} onClick={() => setFilter(f)}
+                    className={`${styles.gd_filter_btn} ${filter === f ? styles.active : ""}`}>
+                    {f === "all" ? "All Goals" : f === "short-term" ? "Short-Term" : "Long-Term"}
+                  </button>
+                ))}
+              </div>
+
+              {filteredGoals.length === 0 ? (
+                <div className={styles.gd_empty}>
+                  <div className={styles.gd_empty_icon}>🎯</div>
+                  <div className={styles.gd_empty_title}>
+                    {loadingGoals ? "Loading goals..." : "No goals yet"}
+                  </div>
+                  <p>Set your first goal and build a system to reach it.</p>
+                </div>
+              ) : (
+                filteredGoals.map(goal => <GoalCard key={goal.id} goal={goal} onLog={handleLog} />)
+              )}
+            </>
+          )}
         </div>
 
       </div>
-
-
-         </div>
     </div>
   );
 }
