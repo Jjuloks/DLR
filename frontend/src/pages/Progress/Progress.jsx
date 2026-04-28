@@ -235,6 +235,36 @@ const handleSubmit = async (e) =>{
       if (!goalResponse.ok) throw new Error(goalResponse.error?.message || `Error ${goalResponse.status}`);
 
 
+      const newGoalId = goalData.data?.id ?? goalData.id;
+
+      for (const a of actions) {
+        const actionPayload = {
+          data: {
+            name: a.name,
+            description: a.description,
+            frequency: a.frequency,
+            timesPerPeriod: a.timesPerPeriod,
+            hour: a.schedule.hour,
+            daysOfWeek: a.schedule.daysOfWeek,
+            dayOfMonth: a.schedule.dayOfMonth,
+            intervalDays: a.schedule.intervalDays,
+            completedSessions: 0,
+            completedDates: [],
+            goal: newGoalId,
+          },
+        };
+        const actRes = await fetch(`${STRAPI_URL}/api/actions`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(actionPayload),
+        });
+        if (!actRes.ok) {
+          const err = await actRes.json();
+          throw new Error(err.error?.message || `Action error ${actRes.status}`);
+        }
+      }
+
+
 
 
       setSuccess(true);
